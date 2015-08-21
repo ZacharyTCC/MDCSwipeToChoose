@@ -130,18 +130,28 @@ const void * const MDCViewStateKey = &MDCViewStateKey;
 }
 
 - (void)mdc_returnToOriginalCenter {
-    [UIView animateWithDuration:self.mdc_options.swipeCancelledAnimationDuration
-                          delay:0.0
-                        options:self.mdc_options.swipeCancelledAnimationOptions
-                     animations:^{
-                         self.layer.transform = self.mdc_viewState.originalTransform;
-                         self.center = self.mdc_viewState.originalCenter;
-                     } completion:^(BOOL finished) {
-                         id<MDCSwipeToChooseDelegate> delegate = self.mdc_options.delegate;
-                         if ([delegate respondsToSelector:@selector(viewDidCancelSwipe:)]) {
-                             [delegate viewDidCancelSwipe:self];
-                         }
-                     }];
+    [UIView animateWithDuration:self.mdc_options.swipeCancelledAnimationDuration delay:0.0 usingSpringWithDamping:0.7 initialSpringVelocity:0.5 options:self.mdc_options.swipeCancelledAnimationOptions animations:^{
+        self.layer.transform = self.mdc_viewState.originalTransform;
+        self.center = self.mdc_viewState.originalCenter;
+    } completion:^(BOOL finished) {
+        id<MDCSwipeToChooseDelegate> delegate = self.mdc_options.delegate;
+        if ([delegate respondsToSelector:@selector(viewDidCancelSwipe:)]) {
+            [delegate viewDidCancelSwipe:self];
+        }
+    }];
+    
+//    [UIView animateWithDuration:self.mdc_options.swipeCancelledAnimationDuration
+//                          delay:0.0
+//                        options:self.mdc_options.swipeCancelledAnimationOptions
+//                     animations:^{
+//                         self.layer.transform = self.mdc_viewState.originalTransform;
+//                         self.center = self.mdc_viewState.originalCenter;
+//                     } completion:^(BOOL finished) {
+//                         id<MDCSwipeToChooseDelegate> delegate = self.mdc_options.delegate;
+//                         if ([delegate respondsToSelector:@selector(viewDidCancelSwipe:)]) {
+//                             [delegate viewDidCancelSwipe:self];
+//                         }
+//                     }];
 }
 
 - (void)mdc_exitSuperviewFromTranslation:(CGPoint)translation {
