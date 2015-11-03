@@ -48,6 +48,11 @@
 @property (nonatomic, strong) UIView *nopeView;
 
 /*!
+ * The "superLiked" view, which fades in as the `MDCSwipeToChooseView` is panned to the up.
+ */
+@property (nonatomic, strong) UIView *superLikedView;
+
+/*!
  * The designated initializer takes a `frame` and a set of options to customize
  * the behavior of the view.
  */

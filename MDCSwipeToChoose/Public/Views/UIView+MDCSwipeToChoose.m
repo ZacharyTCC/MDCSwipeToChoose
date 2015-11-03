@@ -116,7 +116,9 @@ const void * const MDCViewStateKey = &MDCViewStateKey;
     MDCSwipeDirection direction = [self mdc_directionOfExceededThreshold];
     switch (direction) {
         case MDCSwipeDirectionRight:
-        case MDCSwipeDirectionLeft: {
+        case MDCSwipeDirectionLeft:
+        case MDCSwipeDirectionUp:
+        case MDCSwipeDirectionDown: {
             CGPoint translation = MDCCGPointSubtract(self.center,
                                                      self.mdc_viewState.originalCenter);
             [self mdc_exitSuperviewFromTranslation:translation];
@@ -186,10 +188,19 @@ const void * const MDCViewStateKey = &MDCViewStateKey;
         CGFloat thresholdRatio = MIN(1.f, translationPoint/self.mdc_options.threshold);
 
         MDCSwipeDirection direction = MDCSwipeDirectionNone;
-        if (translation.x > 0.f) {
-            direction = MDCSwipeDirectionRight;
-        } else if (translation.x < 0.f) {
-            direction = MDCSwipeDirectionLeft;
+        if (fabs(translation.x) >= fabs(translation.y)) {
+            if (translation.x > 0.f) {
+                direction = MDCSwipeDirectionRight;
+            } else if (translation.x < 0.f) {
+                direction = MDCSwipeDirectionLeft;
+            }
+        }
+        else {
+            if (translation.y > 0.f) {
+                direction = MDCSwipeDirectionDown;
+            } else if (translation.y < 0.f) {
+                direction = MDCSwipeDirectionUp;
+            }
         }
 
         MDCPanState *state = [MDCPanState new];
@@ -220,6 +231,10 @@ const void * const MDCViewStateKey = &MDCViewStateKey;
             return CGPointMake(-offset, 0);
         case MDCSwipeDirectionRight:
             return CGPointMake(offset, 0);
+        case MDCSwipeDirectionUp:
+            return CGPointMake(0, -offset);
+        case MDCSwipeDirectionDown:
+            return CGPointMake(0, offset);
         default:
             [NSException raise:NSInternalInconsistencyException
                         format:@"Invallid direction argument."];
@@ -232,6 +247,10 @@ const void * const MDCViewStateKey = &MDCViewStateKey;
         return MDCSwipeDirectionRight;
     } else if (self.center.x < self.mdc_viewState.originalCenter.x - self.mdc_options.threshold) {
         return MDCSwipeDirectionLeft;
+    } else if (self.center.y > self.mdc_viewState.originalCenter.y + self.mdc_options.threshold) {
+        return MDCSwipeDirectionDown;
+    } else if (self.center.y < self.mdc_viewState.originalCenter.y - self.mdc_options.threshold) {
+        return MDCSwipeDirectionUp;
     } else {
         return MDCSwipeDirectionNone;
     }
